@@ -3,11 +3,11 @@ version: '3.8'
 services:
   api:
     container_name: finshark_api
+    restart: unless-stopped
     build:
       context: ./server # Path to the Dockerfile
       dockerfile: Dockerfile
       target: final
-    restart: unless-stopped
     environment:
       ConnectionStrings__DefaultConnection: Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Trust Server Certificate=true; Pooling=true; MinPoolSize=0; MaxPoolSize=100; Timeout=15; CommandTimeout=30
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
@@ -20,6 +20,7 @@ services:
 
   migrations:
     container_name: finshark_db_migrations
+    restart: 'no'
     build:
       context: ./server # Path to the Dockerfile
       dockerfile: Dockerfile
