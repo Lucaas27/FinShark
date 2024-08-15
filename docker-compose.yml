@@ -9,11 +9,11 @@ services:
       target: final
     restart: unless-stopped
     environment:
-      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      ConnectionStrings__DefaultConnection: Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Trust Server Certificate=true; Pooling=true; MinPoolSize=0; MaxPoolSize=100; Timeout=15; CommandTimeout=30
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
-      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
-    # ports:
-    #   - '7286:7286'
+      ASPNETCORE_URLS: http://*:${API_PORT}
+    ports:
+      - '${API_PORT}:${API_PORT}'
     depends_on:
       - db
       - migrations
@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
       target: migrations
     environment:
-      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      ConnectionStrings__DefaultConnection: Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Trust Server Certificate=true; Pooling=true; MinPoolSize=0; MaxPoolSize=100; Timeout=15; CommandTimeout=30
     command: ['dotnet', 'ef', 'database', 'update']
     depends_on:
       - db
@@ -34,8 +34,8 @@ services:
     container_name: finshark_adminer
     image: adminer:latest
     restart: unless-stopped
-    # ports:
-    #   - '9090:8080'
+    ports:
+      - '${ADMINER_PORT}:8080'
 
   db:
     container_name: finshark_db
